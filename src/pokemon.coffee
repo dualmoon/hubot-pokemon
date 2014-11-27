@@ -24,6 +24,5 @@ module.exports = (robot) ->
     else
       return "Error getting pokemon."
     list = []
-    for type in bulba.types
-      list.push type.name
+    list.push type.name for type in bulba.types
     msg.reply "Bulbasaur's type(s): #{if list.length > 1 then list.join ', ' else list[0]}"
