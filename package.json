@@ -1,0 +1,57 @@
+{
+  "name": "hubot-pokemon",
+  "description": "A Hubot script to get Pokémon info.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Ashley Luna",
+    "email": "luna@airsi.de"
+  },
+  "license": "GPL-3",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "pokemon"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dualmoon/hubot-pokemon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dualmoon/hubot-pokemon/issues"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
+  },
+  "main": "index.coffee",
+  "scripts": {
+    "test": "script/test"
+  },
+  "gitHead": "19ba7b99e03ad2bd56682418c7155bff94c15c6d",
+  "homepage": "https://github.com/dualmoon/hubot-pokemon",
+  "_id": "hubot-pokemon@0.0.1",
+  "_shasum": "d663da53b620005502d5ca321b848bffd5bff9cf",
+  "_from": "hubot-pokemon@",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "dualmoon",
+    "email": "luna@airsi.de"
+  },
+  "maintainers": [
+    {
+      "name": "dualmoon",
+      "email": "luna@airsi.de"
+    }
+  ],
+  "dist": {
+    "shasum": "d663da53b620005502d5ca321b848bffd5bff9cf",
+    "tarball": "http://registry.npmjs.org/hubot-pokemon/-/hubot-pokemon-0.0.1.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/hubot-pokemon/-/hubot-pokemon-0.0.1.tgz"
+}
