@@ -1,7 +1,7 @@
 {
   "name": "hubot-pokemon",
   "description": "A Hubot script to get Pokémon info.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": {
     "name": "Ashley Luna",
     "email": "luna@airsi.de"
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "coffee-script": "~1.6",
+    "fuzzyset.js": "0.0.1",
     "joemon": "0.0.3"
   },
   "devDependencies": {
