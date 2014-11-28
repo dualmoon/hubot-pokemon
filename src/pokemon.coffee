@@ -22,15 +22,12 @@ pokeNames = []
 pokeNames.push(item.name) for item in pokeDex.body.pokemon
 pokeDict = []
 for item in pokeList
-  console.log "Item is #{JSON.stringify item}"
   pokeDict[item.name] = item.resource_uri.split('/')[3]
 pokeFuzzy = new Fuzzy(pokeNames)
 
 getPokemonByName = (name) ->
   match = pokeFuzzy.get(name)[0][1]
-  # [ [1, 'bulbasaur' ] ]
-  pokemon.getPokemon pokeDict[match]
-  # pokeDict['bulbasaur'] -> 1
+  poke = pokemon.getPokemon(pokeDict[match]).body
   
 
 module.exports = (robot) ->
