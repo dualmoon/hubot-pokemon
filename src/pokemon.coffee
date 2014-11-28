@@ -46,6 +46,6 @@ module.exports = (robot) ->
     msg.reply "Coming soonish."
     
   robot.respond /poke(?:mon)?(?: me)? (\w+)$/im, (msg) ->
-      thePoke = getPokemonByName msg[1]
-      # msg[1] -> balbaseur
-      msg.respond "I am #{thePoke.name} and my attack is #{thePoke.attack}!"
+    thePoke = getPokemonByName msg[1]
+    # msg[1] -> balbaseur
+    msg.respond "I am #{thePoke.name} and my attack is #{thePoke.attack}!"
