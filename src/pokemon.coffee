@@ -15,12 +15,23 @@
 Pokemon = require 'joemon'
 pokemon = new Pokemon()
 Fuzzy = require 'fuzzyset.js'
+pokeDex = pokemon.getPokedex()
 pokeList = []
-pokeList.push(item.name) for item in pokemon.getPokedex(1).body.pokemon
-pokeList = new Fuzzy(pokeList)
+pokeList.push(item) for item in pokeDex.body.pokemon
+pokeNames = []
+pokeNames.push(item.name) for item in pokeDex.body.pokemon
 pokeDict = []
 for item in pokeList
+  console.log "Item is #{JSON.stringify item}"
   pokeDict[item.name] = item.resource_uri.split('/')[3]
+pokeFuzzy = new Fuzzy(pokeNames)
+
+getPokemonByName = (name) ->
+  match = pokeFuzzy.get(name)[0][1]
+  # [ [1, 'bulbasaur' ] ]
+  pokemon.getPokemon pokeDict[match]
+  # pokeDict['bulbasaur'] -> 1
+  
 
 module.exports = (robot) ->
   # Test command
@@ -38,6 +49,6 @@ module.exports = (robot) ->
     msg.reply "Coming soonish."
     
   robot.respond /pokemon(?: me)? (\w+)$/im, (msg) ->
-      thePoke = pokeList.get(msg.get[1])[0][1]
-      thePoke = pokemon.getPokemon pokeDict[thePoke]
+      thePoke = getPokemonByName(msg[1])
+      # msg[1] -> balbaseur
       msg.respond "I am #{thePoke.name} and my attack is #{thePoke.attack}!"
