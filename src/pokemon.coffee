@@ -8,6 +8,8 @@
 #   None
 #
 # Commands:
+#   hubot (poke)dex (me) Pikachu - fuzzy pokemon name search
+#   hubot (poke)dex sprite (me) Pikachu - grabs a direct link to a sprite of the give pokemon
 #
 # Author:
 #   dualmoon
@@ -31,16 +33,6 @@ getPokemonByName = (name) ->
   
 
 module.exports = (robot) ->
-  # Test command
-  robot.respond /bulba/, (msg) ->
-    response = pokemon.getPokemon(1)
-    if response.status is 200
-      bulba = response.body
-    else
-      return "Error getting pokemon."
-    list = []
-    list.push type.name for type in bulba.types
-    msg.reply "Bulbasaur's type(s): #{list.join ', '}"
 
   robot.respond /(?:poke)?dex sprite(?: me)? (\w+)$/im, (msg) ->
     preURI = "http://pokeapi.co"
