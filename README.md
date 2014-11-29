@@ -5,5 +5,5 @@ Depends on the `http-sync` package which will require libcurl headers. On Ubuntu
 Commands
 ========
 
-* hubot (poke)dex (me) Pikachu - performs a fuzzy matching search to simply verify a pokemon's name
-* hubot (poke)dex sprite (me) Pikachu - performs a fuzzy matching search to give a direct link to a pokemon's sprite
+* `hubot (poke)dex (me) Pikachu` - performs a fuzzy matching search to simply verify a pokemon's name
+* `hubot (poke)dex sprite (me) Pikachu` - performs a fuzzy matching search to give a direct link to a pokemon's sprite
