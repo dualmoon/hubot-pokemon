@@ -1,7 +1,7 @@
 {
   "name": "hubot-pokemon",
   "description": "A Hubot script to get Pokémon info.",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "author": {
     "name": "Ashley Luna",
     "email": "luna@airsi.de"
@@ -20,6 +20,7 @@
     "url": "https://github.com/dualmoon/hubot-pokemon/issues"
   },
   "dependencies": {
+    "cheerio": "^0.18.0",
     "coffee-script": "~1.6",
     "fuzzyset.js": "0.0.1",
     "joemon": "0.0.3"
