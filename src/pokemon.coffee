@@ -9,7 +9,8 @@
 #
 # Commands:
 #   hubot (poke)dex (me) Pikachu - fuzzy pokemon name search
-#   hubot (poke)dex sprite (me) Pikachu - grabs a direct link to a sprite of the give pokemon
+#   hubot (poke)dex sprite (me) Pikachu - grabs a direct link to a sprite of the given pokemon
+#   hubot (poke)dex art (me) Pikachu = grabs a direct link to the official art of the given pokemon
 #
 # Author:
 #   dualmoon
