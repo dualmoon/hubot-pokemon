@@ -42,10 +42,13 @@ module.exports = (robot) ->
     list.push type.name for type in bulba.types
     msg.reply "Bulbasaur's type(s): #{list.join ', '}"
 
-  robot.respond /poke sprite(?: me)? (\w+)$/im, (msg) ->
-    msg.reply "Coming soonish."
+  robot.respond /(?:poke)?dex sprite(?: me)? (\w+)$/im, (msg) ->
+    preURI = "http://pokeapi.co/"
+    thePoke = getPokemonByName msg.match[1]
+    img = pokemon.getSprite thePoke.pkdx_id
+    msg.reply "#{preURI}#{img.body.image}"
     
-  robot.respond /poke(?:mon)?(?: me)? (\w+)$/im, (msg) ->
+  robot.respond /(?:poke)?dex?(?: me)? (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
     # msg[1] -> balbaseur
     msg.reply "I am #{thePoke.name} and my attack is #{thePoke.attack}!"
