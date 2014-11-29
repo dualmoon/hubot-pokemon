@@ -46,7 +46,7 @@ module.exports = (robot) ->
     preURI = "http://pokeapi.co"
     thePoke = getPokemonByName msg.match[1]
     spriteID = thePoke.sprites[0].resource_uri.split('/')[4]
-    img = pokemon.getSprite 
+    img = pokemon.getSprite spriteID
     msg.reply "#{preURI}#{img.body.image}"
     
   robot.respond /(?:poke)?dex?(?: me)? (\w+)$/im, (msg) ->
