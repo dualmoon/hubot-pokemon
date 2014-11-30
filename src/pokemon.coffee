@@ -32,7 +32,9 @@ pokeFuzzy = new Fuzzy(pokeNames)
 getPokemonByName = (name) ->
   match = pokeFuzzy.get(name)[0][1]
   poke = pokemon.getPokemon(pokeDict[match]).body
-  
+
+String::capitalize = (string) ->
+  string[0].toUpperCase() + string.substring(1)
 
 module.exports = (robot) ->
 
@@ -50,7 +52,7 @@ module.exports = (robot) ->
     evoTxt = "I don't evolve into anything!"
     if thePoke.evolutions.length > 0
       evos = []
-      evos.push("#{item.to} via #{item.method}") for item in thePoke.evolutions
+      evos.push("#{item.to.capitalize} via #{item.method.capitalize}") for item in thePoke.evolutions
       evoTxt = "I evolve into #{evos.join ' and '}!"
       evoTxt = evoTxt.replace('_', ' ')
     msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
