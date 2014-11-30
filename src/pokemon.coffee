@@ -79,5 +79,5 @@ module.exports = (robot) ->
     thePoke = getPokemonByName msg.match[1]
     text = "Here's the moves I can learn: "
     moves = []
-    moves.push "#{item.name} from #{item.learn_type}" for item in thePoke.moves
+    moves.push item.name for item in thePoke.moves
     msg.reply "#{text}#{moves.join ', '}"
