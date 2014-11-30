@@ -37,7 +37,7 @@ movesNames = []
 movesNames.push(item.name) for item in movesList
 movesDict = []
 for item in movesList
-  movesDict[item.name] = item.resource_uri.split('/')[3]
+  movesDict[item.name] = item.resource_uri.split('/')[4]
 movesFuzzy = new Fuzzy(movesNames)
 
 getPokemonByName = (name) ->
