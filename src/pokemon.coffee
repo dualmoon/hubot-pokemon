@@ -8,7 +8,7 @@
 #   None
 #
 # Commands:
-#   hubot (poke)dex (me) Pikachu - fuzzy pokemon name search
+#   hubot (poke)dex (me) Pikachu - fuzzy pokemon name search that returns some basic pokémon info
 #   hubot (poke)dex sprite (me) Pikachu - grabs a direct link to a sprite of the given pokemon
 #   hubot (poke)dex art (me) Pikachu = grabs a direct link to the official art of the given pokemon
 #
@@ -45,8 +45,14 @@ module.exports = (robot) ->
     
   robot.respond /(?:poke)?dex(?: me)? (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
-    # msg[1] -> balbaseur
-    msg.reply "I am #{thePoke.name} and my attack is #{thePoke.attack}!"
+    types = []
+    types.push(item.name) for item in thePoke.types
+    evoTxt = "I don't evolve into anything!"
+    if thePoke.evolutions.length > 0
+      evos = []
+      evos.push("#{item.to} via #{item.method}") for item in thePoke.evolutions
+      evoTxt = "I evolve into #{evos.join ' and '}!"
+    msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokémon! #{evoTxt}"
 
   robot.respond /(?:poke)?dex art(?: me)? (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
