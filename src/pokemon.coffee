@@ -66,8 +66,11 @@ module.exports = (robot) ->
         $ = cheerio.load(body)
         img = $("a[title=\"#{thePoke.name}\"].image img")
         result = []
-        if img.length is 1
-          result.push(img.attr('srcset').split(', ')[1].split(' ')[0])
-        else
-          result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
+        if not img.attr('srcset')
+          result.push img.attr('src')
+        else  
+          if img.length is 1
+            result.push(img.attr('srcset').split(', ')[1].split(' ')[0])
+          else
+            result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
         msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
