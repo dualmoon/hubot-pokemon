@@ -33,8 +33,8 @@ getPokemonByName = (name) ->
   match = pokeFuzzy.get(name)[0][1]
   poke = pokemon.getPokemon(pokeDict[match]).body
 
-String::capitalize = (string) ->
-  string[0].toUpperCase() + string.substring(1)
+String::capitalize = () ->
+  @[0].toUpperCase() + @.substring(1)
 
 module.exports = (robot) ->
 
