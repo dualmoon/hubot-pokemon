@@ -10,7 +10,10 @@
 # Commands:
 #   hubot (poke)dex (me) Pikachu - fuzzy pokemon name search that returns some basic pokémon info
 #   hubot (poke)dex sprite (me) Pikachu - grabs a direct link to a sprite of the given pokemon
-#   hubot (poke)dex art (me) Pikachu = grabs a direct link to the official art of the given pokemon
+#   hubot (poke)dex art (me) Pikachu - grabs a direct link to the official art of the given pokemon
+#   hubot (poke)dex moves (me) Pikachu - shows the moves that a pokemon can learn
+#   hubot (poke)dex moves (me) Pikachu Tackle - shows how a pokemon learns a move, if they can
+#   hubot (poke)dex move (me) Tackle - shows information about a move
 #
 # Author:
 #   dualmoon
@@ -28,10 +31,21 @@ pokeDict = []
 for item in pokeList
   pokeDict[item.name] = item.resource_uri.split('/')[3]
 pokeFuzzy = new Fuzzy(pokeNames)
+totalMoves = pokemon.getMoves(1).body.meta.total_count
+movesList = pokemon.getMoves(totalMoves).body.objects
+movesNames = []
+movesNames.push(item.name) for item in movesList
+movesDict = []
+for item in movesList
+  movesDict[item.name] = item.resource_uri.split('/')[3]
+movesFuzzy = new Fuzzy(movesNames)
 
 getPokemonByName = (name) ->
   match = pokeFuzzy.get(name)[0][1]
   poke = pokemon.getPokemon(pokeDict[match]).body
+getMoveByName = (name) ->
+  match = movesFuzzy.get(name)[0][1]
+  move = pokemon.getMove(movesDict[match]).body
 
 String::capitalize = () ->
   @[0].toUpperCase() + @.substring(1)
@@ -90,3 +104,6 @@ module.exports = (robot) ->
           msg.reply "#{thePoke.name} learns #{item.name} by gaining level #{item.level}"
         else
           msg.reply "#{thePoke.name} learns #{item.name} via #{item.learn_type}"
+  robot.respond /(?:poke)?dex move(?: me)? (\w+)$/im, (msg) ->
+    theMove = getMoveByName msg.match[1]
+    msg.reply "#{theMove.name}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"

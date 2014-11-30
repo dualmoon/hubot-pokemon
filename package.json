@@ -23,7 +23,7 @@
     "cheerio": "^0.18.0",
     "coffee-script": "~1.6",
     "fuzzyset.js": "0.0.1",
-    "joemon": "0.0.3"
+    "joemon": ">=0.0.3"
   },
   "devDependencies": {
     "mocha": "*",
