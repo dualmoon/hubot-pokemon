@@ -66,7 +66,7 @@ module.exports = (robot) ->
         $ = cheerio.load(body)
         img = $("a[title=\"#{thePoke.name}\"].image img")
         result = []
-        if not img.attr('srcset')
+        if not img.attr('srcset')?
           result.push img.attr('src')
         else  
           if img.length is 1
