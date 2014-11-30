@@ -85,7 +85,5 @@ module.exports = (robot) ->
   robot.respond /(?:poke)?dex moves(?: me)? (\w+) (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
     for item in thePoke.moves
-      if item.name is msg.match[2]
+      if item.name.toLowerCase() is msg.match[2].toLowerCase()
         msg.reply "#{thePoke.name} learns #{item.name} via #{item.learn_type}"
-    msg.reply "#{thePoke.name} doesn't appear to learn #{msg.match[2]}"
-
