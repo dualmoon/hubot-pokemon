@@ -86,4 +86,7 @@ module.exports = (robot) ->
     thePoke = getPokemonByName msg.match[1]
     for item in thePoke.moves
       if item.name.toLowerCase() is msg.match[2].toLowerCase()
-        msg.reply "#{thePoke.name} learns #{item.name} via #{item.learn_type}"
+        if item.learn_type is "level up"
+          msg.reply "#{thePoke.name} learns #{item.name} by gaining level #{item.level}"
+        else
+          msg.reply "#{thePoke.name} learns #{item.name} via #{item.learn_type}"
