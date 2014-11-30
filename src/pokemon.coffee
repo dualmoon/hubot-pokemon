@@ -52,7 +52,7 @@ module.exports = (robot) ->
       evos = []
       evos.push("#{item.to} via #{item.method}") for item in thePoke.evolutions
       evoTxt = "I evolve into #{evos.join ' and '}!"
-    msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokémon! #{evoTxt}"
+    msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
 
   robot.respond /(?:poke)?dex art(?: me)? (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
