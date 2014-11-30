@@ -74,3 +74,10 @@ module.exports = (robot) ->
           else
             result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
         msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
+
+  robot.respond /(?:poke)?dex moves(?: me)? (\w+)$/im, (msg) ->
+    thePoke = getPokemonByName msg.match[1]
+    text = "Here's the moves I can learn: "
+    moves = []
+    moves.push "#{item.name} from #{item.learn_type}" for item in thePoke.moves
+    msg.reply "#{text}#{moves.join ', '}"
