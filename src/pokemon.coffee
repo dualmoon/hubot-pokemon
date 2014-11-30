@@ -48,7 +48,7 @@ module.exports = (robot) ->
   robot.respond /(?:poke)?dex(?: me)? (\w+)$/im, (msg) ->
     thePoke = getPokemonByName msg.match[1]
     types = []
-    types.push(item.name) for item in thePoke.types
+    types.push(item.name.capitalize()) for item in thePoke.types
     evoTxt = "I don't evolve into anything!"
     if thePoke.evolutions.length > 0
       evos = []
