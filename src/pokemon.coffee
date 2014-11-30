@@ -34,10 +34,10 @@ pokeFuzzy = new Fuzzy(pokeNames)
 totalMoves = pokemon.getMoves(1).body.meta.total_count
 movesList = pokemon.getMoves(totalMoves).body.objects
 movesNames = []
-movesNames.push(item.name) for item in movesList
+movesNames.push(item.name.replace '-', ' ') for item in movesList
 movesDict = []
 for item in movesList
-  movesDict[item.name] = item.resource_uri.split('/')[4]
+  movesDict[item.name.replace '-', ' '] = item.resource_uri.split('/')[4]
 movesFuzzy = new Fuzzy(movesNames)
 
 getPokemonByName = (name) ->
@@ -104,6 +104,6 @@ module.exports = (robot) ->
           msg.reply "#{thePoke.name} learns #{item.name} by gaining level #{item.level}"
         else
           msg.reply "#{thePoke.name} learns #{item.name} via #{item.learn_type}"
-  robot.respond /(?:poke)?dex move(?: me)? (\w+)$/im, (msg) ->
+  robot.respond /(?:poke)?dex move(?: me)? (\w+(?: \w+)?)$/im, (msg) ->
     theMove = getMoveByName msg.match[1]
-    msg.reply "#{theMove.name}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"
+    msg.reply "#{theMove.name.replace '-', ' '}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"
