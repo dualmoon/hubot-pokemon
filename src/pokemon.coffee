@@ -26,9 +26,10 @@ Pokemon = require 'joemon'
 pokemon = new Pokemon()
 
 module.exports = (robot) ->
-
+	moveNames = pokeNames = []
+	moveFuzzy = pokeFuzzy = {}
 	pokemon.getPokedex 1, (status, body) ->
-		pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
+		pokeNames.push pkmn.pokemon_species.name for pkmn in body.pokemon_entries
 		pokeFuzzy = new Fuzzy(pokeNames)
 		namesReady = true
 	pokemon.getMoves 9999, (status, body) ->
