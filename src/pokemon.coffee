@@ -34,16 +34,16 @@ class PokeScript
 		@namesReady = false
 		@movesReady = false
 
-		@pokemon.getPokedex 1, (status, body) ->
+		@pokemon.getPokedex 1, (status, body) =>
 			@pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
 			@pokeFuzzy = new Fuzzy(@pokeNames)
 			@namesReady = true
-		@pokemon.getMoves 9999, (status, body) ->
+		@pokemon.getMoves 9999, (status, body) =>
 			@moveNames.push move.name.replace('-',' ') for move in body.results
 			@moveFuzzy = new Fuzzy(@moveNames)
 			@movesReady = true
 
-	getPokemonByName = (name) ->
+	getPokemonByName = (name) =>
 		if name not in @pokeNames
 			fuzzyMatch = @pokeFuzzy.get(name)
 			if match.length > 0
@@ -54,7 +54,7 @@ class PokeScript
 		else
 			{match: 'exact', name: name}
 
-	getMoveByName = (name) ->
+	getMoveByName = (name) =>
 		if name not in @moveNames
 			fuzzyMatch = @moveFuzzy.get(name)
 			if match.length > 0
@@ -65,7 +65,7 @@ class PokeScript
 		else
 			{match: 'exact', name: name}
 
-	ready: ->
+	ready: =>
 		@namesReady and @movesReady
 pokeScript = new PokeScript()
 
