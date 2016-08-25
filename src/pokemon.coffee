@@ -24,50 +24,46 @@ cheerio = require 'cheerio'
 Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
 
-class PokeScript
-	constructor: ->
-		@pokeNames = []
-		@pokeFuzzy = {}
-		@moveNames = []
-		@moveFuzzy = {}
-		@pokemon = new Pokemon()
-		@namesReady = false
-		@movesReady = false
+pokeFuzz=
+	pokeNames: []
+	pokeFuzzy: {}
+	moveNames: []
+	moveFuzzy: {}
+	namesReady: false
+	movesReady: false
 
-		@pokemon.getPokedex 1, (status, body) =>
-			@pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
-			@pokeFuzzy = new Fuzzy(@pokeNames)
-			@namesReady = true
-		@pokemon.getMoves 9999, (status, body) =>
-			@moveNames.push move.name.replace('-',' ') for move in body.results
-			@moveFuzzy = new Fuzzy(@moveNames)
-			@movesReady = true
+pokemon = new Pokemon()
 
-	getPokemonByName = (name) =>
-		if name not in @pokeNames
-			fuzzyMatch = @pokeFuzzy.get(name)
-			if match.length > 0
-				match = fuzzyMatch[0][1]
-				{match: 'fuzzy', name: match}
-			else
-				{match: 'none'}
+pokemon.getPokedex 1, (status, body) ->
+	pokeFuzz.pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
+	pokeFuzz.pokeFuzzy = new Fuzzy(pokeFuzz.pokeNames)
+	pokeFuzz.namesReady = true
+pokemon.getMoves 9999, (status, body) ->
+	pokeFuzz.moveNames.push move.name.replace('-',' ') for move in body.results
+	pokeFuzz.moveFuzzy = new Fuzzy(pokeFuzz.moveNames)
+	pokeFuzz.movesReady = true
+
+getPokemonByName = (name) =>
+	if name not in pokeFuzz.pokeNames
+		fuzzyMatch = pokeFuzz.pokeFuzzy.get(name)
+		if match.length > 0
+			match = fuzzyMatch[0][1]
+			{match: 'fuzzy', name: match}
 		else
-			{match: 'exact', name: name}
+			{match: 'none'}
+	else
+		{match: 'exact', name: name}
 
-	getMoveByName = (name) =>
-		if name not in @moveNames
-			fuzzyMatch = @moveFuzzy.get(name)
-			if match.length > 0
-				match = fuzzyMatch[0][1]
-				{match: 'fuzzy', name: match}
-			else
-				{match: 'none', name: ''}
+getMoveByName = (name) =>
+	if name not in pokeFuzz.moveNames
+		fuzzyMatch = pokeFuzz.moveFuzzy.get(name)
+		if match.length > 0
+			match = fuzzyMatch[0][1]
+			{match: 'fuzzy', name: match}
 		else
-			{match: 'exact', name: name}
-
-	ready: =>
-		@namesReady and @movesReady
-pokeScript = new PokeScript()
+			{match: 'none', name: ''}
+	else
+		{match: 'exact', name: name}
 
 String::capitalize = () ->
 	@[0].toUpperCase() + @.substring(1)
