@@ -28,6 +28,7 @@ pokemon = new Pokemon()
 module.exports = (robot) ->
 	moveNames = pokeNames = []
 	moveFuzzy = pokeFuzzy = {}
+	namesReady = movesReady = false
 	pokemon.getPokedex 1, (status, body) ->
 		pokeNames.push pkmn.pokemon_species.name for pkmn in body.pokemon_entries
 		pokeFuzzy = new Fuzzy(pokeNames)
