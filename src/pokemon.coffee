@@ -38,7 +38,7 @@ module.exports = (robot) ->
 		moveFuzzy = new Fuzzy(moveNames)
 		movesReady = true
 
-	getPokemonByName = (name) =>
+	getPokemonByName = (name) ->
 		if name not in pokeNames
 			fuzzyMatchNames = pokeFuzzy.get(name)
 			if fuzzyMatchNames and fuzzyMatchNames.length > 0
@@ -49,7 +49,7 @@ module.exports = (robot) ->
 		else
 			{match: 'exact', name: name}
 
-	getMoveByName = (name) =>
+	getMoveByName = (name) ->
 		if name not in moveNames
 			fuzzyMatchMoves = moveFuzzy.get(name)
 			if fuzzyMatchMoves and fuzzyMatchMoves.length > 0
@@ -63,7 +63,7 @@ module.exports = (robot) ->
 	String::capitalize = () ->
 		@[0].toUpperCase() + @.substring(1)
 
-	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) =>
+	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
 		if namesReady and movesReady
 			{match, name} = getPokemonByName(msg.match[1])
 			if match is 'none'
