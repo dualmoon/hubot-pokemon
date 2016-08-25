@@ -34,5 +34,5 @@
   "scripts": {
     "test": "script/test"
   },
-  "homepage": "https://github.com/dualmoon/hubot-pokemon",
+  "homepage": "https://github.com/dualmoon/hubot-pokemon"
 }
