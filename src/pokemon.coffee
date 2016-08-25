@@ -90,25 +90,32 @@ module.exports = (robot) =>
 			evoTxt = "I evolve into #{evos.join ' and '}!"
 			evoTxt = evoTxt.replace('_', ' ')
 		msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
-
+###
 	robot.respond /(?:poke)?dex art(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
-		robot.http("http://bulbapedia.bulbagarden.net/wiki/#{thePoke.name}")
-			.get() (err, res, body) ->
-				if err or res.statusCode isnt 200
-				 return "It's broke."
-				$ = cheerio.load(body)
-				img = $("a[title=\"#{thePoke.name}\"].image img")
-				result = []
-				if not img.attr('srcset')?
-					result.push img.attr('src')
-				else  
-					if img.length is 1
-						result.push(img.attr('srcset').split(', ')[1].split(' ')[0])
-					else
-						result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
-				msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
-
+		if namesReady
+			{match, name} = getPokemonByName(msg.match[1])
+			if match is 'none'
+				msg.reply "I'm not sure what Pokémon you're looking for!"
+			else
+				if match is 'fuzzy'
+					msg.reply "I'm assuming you mean #{name}, right?"
+				robot.http("http://bulbapedia.bulbagarden.net/wiki/#{thePoke.name}")
+					.get() (err, res, body) ->
+						if err or res.statusCode isnt 200
+						 return "It's broke."
+						$ = cheerio.load(body)
+						img = $("a[title=\"#{thePoke.name}\"].image img")
+						result = []
+						if not img.attr('srcset')?
+							result.push img.attr('src')
+						else  
+							if img.length is 1
+								result.push(img.attr('srcset').split(', ')[1].split(' ')[0])
+							else
+								result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
+						msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
+###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
 		text = "Here's the moves I can learn: "
