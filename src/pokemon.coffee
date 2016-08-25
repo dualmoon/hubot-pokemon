@@ -23,17 +23,9 @@ cheerio = require 'cheerio'
 
 Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
-
+pokemon = new Pokemon()
 
 module.exports = (robot) ->
-	pokeNames = []
-	pokeFuzzy = {}
-	moveNames = []
-	moveFuzzy = {}
-	namesReady = false
-	movesReady = false
-
-	pokemon = new Pokemon()
 
 	pokemon.getPokedex 1, (status, body) ->
 		pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
