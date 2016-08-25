@@ -18,9 +18,7 @@
 # Author:
 #   dualmoon
 
-# This is for grabbing pokemon art from bulbapedia
-cheerio = require 'cheerio'
-
+padleft = require 'lodash.padstart'
 Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
 pokemon = new Pokemon()
@@ -102,8 +100,9 @@ module.exports = (robot) =>
 			else
 				if match is 'fuzzy'
 					msg.reply "I'm assuming you mean #{name}, right?"
-				uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'
-				msg.reply "#{uri}#{pokeDict[name]}.png"
+				uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'
+				pokeID = padleft pokeDict[name], 3, '0'
+				msg.reply "#{uri}#{pokeID}.png"
 	###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
