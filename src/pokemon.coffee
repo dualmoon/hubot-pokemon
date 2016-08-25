@@ -26,28 +26,27 @@ Pokemon = require 'joemon'
 
 
 module.exports = (robot) ->
-	pokeFuzz=
-		pokeNames: []
-		pokeFuzzy: {}
-		moveNames: []
-		moveFuzzy: {}
-		namesReady: false
-		movesReady: false
+	pokeNames = []
+	pokeFuzzy = {}
+	moveNames = []
+	moveFuzzy = {}
+	namesReady = false
+	movesReady = false
 
 	pokemon = new Pokemon()
 
 	pokemon.getPokedex 1, (status, body) ->
-		pokeFuzz.pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
-		pokeFuzz.pokeFuzzy = new Fuzzy(pokeFuzz.pokeNames)
-		pokeFuzz.namesReady = true
+		pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
+		pokeFuzzy = new Fuzzy(pokeNames)
+		namesReady = true
 	pokemon.getMoves 9999, (status, body) ->
-		pokeFuzz.moveNames.push move.name.replace('-',' ') for move in body.results
-		pokeFuzz.moveFuzzy = new Fuzzy(pokeFuzz.moveNames)
-		pokeFuzz.movesReady = true
+		moveNames.push move.name.replace('-',' ') for move in body.results
+		moveFuzzy = new Fuzzy(moveNames)
+		movesReady = true
 
 	getPokemonByName = (name) =>
-		if name not in pokeFuzz.pokeNames
-			fuzzyMatch = pokeFuzz.pokeFuzzy.get(name)
+		if name not in pokeNames
+			fuzzyMatch = .get(name)
 			if match.length > 0
 				match = fuzzyMatch[0][1]
 				{match: 'fuzzy', name: match}
@@ -57,8 +56,8 @@ module.exports = (robot) ->
 			{match: 'exact', name: name}
 
 	getMoveByName = (name) =>
-		if name not in pokeFuzz.moveNames
-			fuzzyMatch = pokeFuzz.moveFuzzy.get(name)
+		if name not in moveNames
+			fuzzyMatch = moveFuzzy.get(name)
 			if match.length > 0
 				match = fuzzyMatch[0][1]
 				{match: 'fuzzy', name: match}
@@ -71,14 +70,17 @@ module.exports = (robot) ->
 		@[0].toUpperCase() + @.substring(1)
 
 	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
-		{match, name} = getPokemonByName(msg.match[1])
-		if match is 'none'
-			msg.reply "I'm not sure what Pokemon you're looking for!"
+		if namesReady and movesReady
+			{match, name} = getPokemonByName(msg.match[1])
+			if match is 'none'
+				msg.reply "I'm not sure what Pokémon you're looking for!"
+			else
+				if match is 'fuzzy'
+					msg.reply "I'm assuming you mean #{name}, right?"
+				pokemon.getPokemon name, (status, body) ->
+					msg.send body.sprites.front_female
 		else
-			if match is 'fuzzy'
-				msg.reply "I'm assuming you mean #{name}, right?"
-			pokemon.getPokemon name, (status, body) ->
-				msg.send body.sprites.front_female
+			msg.reply "Sorry, I'm still initializing the Pokédex"
 ###
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
