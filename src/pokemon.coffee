@@ -71,13 +71,13 @@ String::capitalize = () ->
 module.exports = (robot) ->
 
 	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
-		{match, name} = pokeScript.getPokemonByName(msg.match[1])
+		{match, name} = getPokemonByName(msg.match[1])
 		if match is 'none'
 			msg.reply "I'm not sure what Pokemon you're looking for!"
 		else
 			if match is 'fuzzy'
 				msg.reply "I'm assuming you mean #{name}, right?"
-			pokeScript.pokemon.getPokemon name, (status, body) ->
+			pokemon.getPokemon name, (status, body) ->
 				msg.send body.sprites.front_female
 ###
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
