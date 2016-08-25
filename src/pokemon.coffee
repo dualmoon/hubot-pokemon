@@ -25,7 +25,7 @@ Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
 pokemon = new Pokemon()
 
-module.exports = (robot) ->
+module.exports = (robot) =>
 	moveNames = pokeNames = []
 	moveFuzzy = pokeFuzzy = {}
 	namesReady = movesReady = false
