@@ -29,8 +29,10 @@ module.exports = (robot) =>
 	moveNames = pokeNames = []
 	moveFuzzy = pokeFuzzy = {}
 	namesReady = movesReady = false
+	pokeDict = {}
 	pokemon.getPokedex 1, (status, body) ->
 		pokeNames.push pkmn.pokemon_species.name for pkmn in body.pokemon_entries
+		pokeDict[pkmn.pokemon_species.name] = pkmn.entry_number for pkmn in body.pokemon_entries
 		pokeFuzzy = new Fuzzy(pokeNames)
 		namesReady = true
 	pokemon.getMoves 9999, (status, body) ->
@@ -100,21 +102,8 @@ module.exports = (robot) =>
 			else
 				if match is 'fuzzy'
 					msg.reply "I'm assuming you mean #{name}, right?"
-				robot.http("http://bulbapedia.bulbagarden.net/wiki/#{thePoke.name}")
-					.get() (err, res, body) ->
-						if err or res.statusCode isnt 200
-						 return "It's broke."
-						$ = cheerio.load(body)
-						img = $("a[title=\"#{thePoke.name}\"].image img")
-						result = []
-						if not img.attr('srcset')?
-							result.push img.attr('src')
-						else  
-							if img.length is 1
-								result.push(img.attr('srcset').split(', ')[1].split(' ')[0])
-							else
-								result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
-						msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
+				uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'
+				msg.reply "#{uri}#{pokeDict[name]}.png"
 	###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
