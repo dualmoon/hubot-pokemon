@@ -69,7 +69,7 @@ module.exports = (robot) ->
 	String::capitalize = () ->
 		@[0].toUpperCase() + @.substring(1)
 
-	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
+	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) =>
 		if namesReady and movesReady
 			{match, name} = getPokemonByName(msg.match[1])
 			if match is 'none'
