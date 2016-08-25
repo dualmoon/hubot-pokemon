@@ -24,51 +24,51 @@ cheerio = require 'cheerio'
 Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
 
-pokeFuzz=
-	pokeNames: []
-	pokeFuzzy: {}
-	moveNames: []
-	moveFuzzy: {}
-	namesReady: false
-	movesReady: false
-
-pokemon = new Pokemon()
-
-pokemon.getPokedex 1, (status, body) ->
-	pokeFuzz.pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
-	pokeFuzz.pokeFuzzy = new Fuzzy(pokeFuzz.pokeNames)
-	pokeFuzz.namesReady = true
-pokemon.getMoves 9999, (status, body) ->
-	pokeFuzz.moveNames.push move.name.replace('-',' ') for move in body.results
-	pokeFuzz.moveFuzzy = new Fuzzy(pokeFuzz.moveNames)
-	pokeFuzz.movesReady = true
-
-getPokemonByName = (name) =>
-	if name not in pokeFuzz.pokeNames
-		fuzzyMatch = pokeFuzz.pokeFuzzy.get(name)
-		if match.length > 0
-			match = fuzzyMatch[0][1]
-			{match: 'fuzzy', name: match}
-		else
-			{match: 'none'}
-	else
-		{match: 'exact', name: name}
-
-getMoveByName = (name) =>
-	if name not in pokeFuzz.moveNames
-		fuzzyMatch = pokeFuzz.moveFuzzy.get(name)
-		if match.length > 0
-			match = fuzzyMatch[0][1]
-			{match: 'fuzzy', name: match}
-		else
-			{match: 'none', name: ''}
-	else
-		{match: 'exact', name: name}
-
-String::capitalize = () ->
-	@[0].toUpperCase() + @.substring(1)
 
 module.exports = (robot) ->
+	pokeFuzz=
+		pokeNames: []
+		pokeFuzzy: {}
+		moveNames: []
+		moveFuzzy: {}
+		namesReady: false
+		movesReady: false
+
+	pokemon = new Pokemon()
+
+	pokemon.getPokedex 1, (status, body) ->
+		pokeFuzz.pokeNames.push pokemon.pokemon_species.name for pokemon in body.pokemon_entries
+		pokeFuzz.pokeFuzzy = new Fuzzy(pokeFuzz.pokeNames)
+		pokeFuzz.namesReady = true
+	pokemon.getMoves 9999, (status, body) ->
+		pokeFuzz.moveNames.push move.name.replace('-',' ') for move in body.results
+		pokeFuzz.moveFuzzy = new Fuzzy(pokeFuzz.moveNames)
+		pokeFuzz.movesReady = true
+
+	getPokemonByName = (name) =>
+		if name not in pokeFuzz.pokeNames
+			fuzzyMatch = pokeFuzz.pokeFuzzy.get(name)
+			if match.length > 0
+				match = fuzzyMatch[0][1]
+				{match: 'fuzzy', name: match}
+			else
+				{match: 'none'}
+		else
+			{match: 'exact', name: name}
+
+	getMoveByName = (name) =>
+		if name not in pokeFuzz.moveNames
+			fuzzyMatch = pokeFuzz.moveFuzzy.get(name)
+			if match.length > 0
+				match = fuzzyMatch[0][1]
+				{match: 'fuzzy', name: match}
+			else
+				{match: 'none', name: ''}
+		else
+			{match: 'exact', name: name}
+
+	String::capitalize = () ->
+		@[0].toUpperCase() + @.substring(1)
 
 	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
 		{match, name} = getPokemonByName(msg.match[1])
