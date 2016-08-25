@@ -72,7 +72,10 @@ module.exports = (robot) ->
 				if match is 'fuzzy'
 					msg.reply "I'm assuming you mean #{name}, right?"
 				pokemon.getPokemon name, (status, body) ->
-					msg.send body.sprites.front_female
+					if body.sprites.front_default
+						msg.send body.sprites.front_default
+					else
+						msg.reply "Sorry, I can't find a sprite for #{name}."
 		else
 			msg.reply "Sorry, I'm still initializing the Pokédex"
 ###
