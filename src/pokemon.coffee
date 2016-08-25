@@ -25,7 +25,7 @@ Fuzzy = require 'fuzzyset.js'
 Pokemon = require 'joemon'
 
 class PokeScript
-	constructor:
+	constructor: ->
 		@pokeNames = []
 		@pokeFuzzy = {}
 		@moveNames = []
@@ -132,3 +132,4 @@ module.exports = (robot) ->
 	robot.respond /(?:poke)?dex move(?: me)? (\S+(?: \S+)?)$/im, (msg) ->
 		theMove = getMoveByName msg.match[1]
 		msg.reply "#{theMove.name.replace '-', ' '}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"
+###
