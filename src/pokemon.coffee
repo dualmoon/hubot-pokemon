@@ -46,12 +46,12 @@ module.exports = (robot) ->
 
 	getPokemonByName = (name) =>
 		if name not in pokeNames
-			fuzzyMatch = .get(name)
+			fuzzyMatch = pokeFuzzy.get(name)
 			if match.length > 0
 				match = fuzzyMatch[0][1]
 				{match: 'fuzzy', name: match}
 			else
-				{match: 'none'}
+				{match: 'none', name:''}
 		else
 			{match: 'exact', name: name}
 
