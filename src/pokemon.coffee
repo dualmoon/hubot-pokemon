@@ -78,7 +78,7 @@ module.exports = (robot) =>
 						msg.reply "Sorry, I can't find a sprite for #{name}."
 		else
 			msg.reply "Sorry, I'm still initializing the Pokédex"
-###
+	###
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
 		types = []
@@ -90,7 +90,7 @@ module.exports = (robot) =>
 			evoTxt = "I evolve into #{evos.join ' and '}!"
 			evoTxt = evoTxt.replace('_', ' ')
 		msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
-###
+	###
 	robot.respond /(?:poke)?dex art(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
 		if namesReady
@@ -115,7 +115,7 @@ module.exports = (robot) =>
 							else
 								result.push(item.attribs.srcset.split(', ')[1].split(' ')[0]) for item in img
 						msg.reply "Here's #{thePoke.name}: #{result.join ', '}"
-###
+	###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
 		text = "Here's the moves I can learn: "
@@ -134,4 +134,4 @@ module.exports = (robot) =>
 	robot.respond /(?:poke)?dex move(?: me)? (\S+(?: \S+)?)$/im, (msg) ->
 		theMove = getMoveByName msg.match[1]
 		msg.reply "#{theMove.name.replace '-', ' '}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"
-###
+	###
