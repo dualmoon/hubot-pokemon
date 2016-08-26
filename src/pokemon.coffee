@@ -73,7 +73,7 @@ module.exports = (robot) =>
 	pre = (msg, name, type) ->
 		if namesReady and movesReady
 			name = name.replace('♂','m').replace('♀','f')
-			{match, name} = eval "get#{type.capitalize}ByName(name)"
+			{match, name} = eval "get#{type.capitalize}ByName(#{name})"
 			if match is 'none'
 				msg.reply "I'm not sure what Pokémon you're looking for!"
 				return false
