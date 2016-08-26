@@ -66,7 +66,6 @@ module.exports = (robot) =>
 	pre = (msg, name, type) ->
 		if namesReady and movesReady
 			name = name.replace('♂','m').replace('♀','f')
-			{match, name} = eval "get#{type.capitalize}ByName(#{name})"
 			if type is 'pokemon'
 				{match, name} = getPokemonByName name
 			else if type is 'move'
