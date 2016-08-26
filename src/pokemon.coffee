@@ -41,6 +41,7 @@ module.exports = (robot) =>
 		moveFuzzy = new Fuzzy(moveNames)
 		movesReady = true
 	###
+	movesReady = true
 
 	getPokemonByName = (name) ->
 		if name not in pokeNames
@@ -90,7 +91,6 @@ module.exports = (robot) =>
 					msg.send body.sprites.front_default
 				else
 					msg.reply "Sorry, I can't find a sprite for #{name}."
-
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
 		if name = pre(msg, msg.match[1], 'pokemon')
 			pokemon.getPokemon name, (status, pkmn) ->
@@ -119,19 +119,6 @@ module.exports = (robot) =>
 							msg.reply "Raw evolution chain (WIP): #{arr}"
 						else
 							msg.send "This pokémon doesn't evolve."
-
-	###
-		thePoke = getPokemonByName msg.match[1]
-		types = []
-		types.push(item.name.capitalize()) for item in thePoke.types
-		evoTxt = "I don't evolve into anything!"
-		if thePoke.evolutions.length > 0
-			evos = []
-			evos.push("#{item.to.capitalize()} via #{if item.method is 'other' then item.detail else item.method}") for item in thePoke.evolutions
-			evoTxt = "I evolve into #{evos.join ' and '}!"
-			evoTxt = evoTxt.replace('_', ' ')
-		msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
-	###
 	robot.respond /(?:poke)?dex art(?: me)? (\S+)$/im, (msg) ->
 		if namesReady
 			{match, name} = getPokemonByName(msg.match[1])
