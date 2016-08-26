@@ -133,7 +133,7 @@ module.exports = (robot) =>
 						# walk the evolution chain
 						arr = []
 						next = (chain, arr) ->
-							arr.push chain.species.name.capitalize
+							arr.push chain.species.name.capitalize()
 							if chain.evolves_to.length > 1
 								bArr = []
 								next(branch, bArr) for branch in chain.evolves_to
@@ -146,9 +146,9 @@ module.exports = (robot) =>
 						types = []
 						for slot in pkmn.types
 							if slot.slot is 1
-								types.push slot.type.name.capitalize
+								types.push slot.type.name.capitalize()
 							else if slot.slot is 2
-								types.push slot.type.name.capitalize
+								types.push slot.type.name.capitalize()
 						# build our first line of pokemon information for output
 						outLines.push "##{pkmn.id}: #{pkmn.name.capitalize()} (#{types.join('/')})"
 
