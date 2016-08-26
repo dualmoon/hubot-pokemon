@@ -20,12 +20,14 @@
 
 padleft = require 'lodash.padstart'
 Fuzzy = require 'fuzzyset.js'
-Pokemon = require 'joemon'
-pokemon = new Pokemon()
+Joemon = require 'joemon'
+pokemon = new Joemon()
 
 module.exports = (robot) =>
-	moveNames = pokeNames = []
-	moveFuzzy = pokeFuzzy = {}
+	#movenames = []
+	pokeNames = []
+	#movesFuzzy = {}
+	pokeFuzzy = {}
 	namesReady = movesReady = false
 	pokeDict = {}
 	pokemon.getPokedex 1, (status, body) ->
@@ -33,10 +35,12 @@ module.exports = (robot) =>
 		pokeDict[pkmn.pokemon_species.name] = pkmn.entry_number for pkmn in body.pokemon_entries
 		pokeFuzzy = new Fuzzy(pokeNames)
 		namesReady = true
+	###
 	pokemon.getMoves 9999, (status, body) ->
 		moveNames.push move.name.replace('-',' ') for move in body.results
 		moveFuzzy = new Fuzzy(moveNames)
 		movesReady = true
+	###
 
 	getPokemonByName = (name) ->
 		if name not in pokeNames
@@ -48,7 +52,7 @@ module.exports = (robot) =>
 				{match: 'none', name:''}
 		else
 			{match: 'exact', name: name}
-
+	###
 	getMoveByName = (name) ->
 		if name not in moveNames
 			fuzzyMatchMoves = moveFuzzy.get(name)
@@ -59,27 +63,63 @@ module.exports = (robot) =>
 				{match: 'none', name: ''}
 		else
 			{match: 'exact', name: name}
+	###
 
 	String::capitalize = () ->
 		@[0].toUpperCase() + @.substring(1)
 
-	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
+	## Helper for checking that the plugin is ready and whatnot
+	pre = (msg, name, type) ->
 		if namesReady and movesReady
-			{match, name} = getPokemonByName(msg.match[1])
+			{match, name} = eval "get#{type.capitalize}ByName(name)"
 			if match is 'none'
 				msg.reply "I'm not sure what Pokémon you're looking for!"
+				return false
 			else
 				if match is 'fuzzy'
-					msg.reply "I'm assuming you mean #{name}, right?"
-				pokemon.getPokemon name, (status, body) ->
-					if body.sprites.front_default
-						msg.send body.sprites.front_default
-					else
-						msg.reply "Sorry, I can't find a sprite for #{name}."
+					msg.send "I'm assuming you mean #{name}?"
+				return name
 		else
-			msg.reply "Sorry, I'm still initializing the Pokédex"
-	###
+			msg.reply "Sorry, I'm still initializing the Pokédex."
+
+	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
+		if name = pre(msg, msg.match[1], 'pokemon')
+			pokemon.getPokemon name, (status, body) ->
+				if body.sprites.front_default
+					msg.send body.sprites.front_default
+				else
+					msg.reply "Sorry, I can't find a sprite for #{name}."
+
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
+		if name = pre(msg, msg.match[1], 'pokemon')
+			pokemon.getPokemon name, (status, pkmn) ->
+				pokemon.getSpecies name, (status, species) ->
+					evoChainId = species.evolution_chain.url.match(/(?:\/([0-9]+)\/)/)[1]
+					pokemon.getEvoChain evoChainId, (status, chain) ->
+						arr = []
+						next = (chain, arr) ->
+							arr.push chain.species.name
+							if chain.evolves_to.length > 1
+								bArr = []
+								next(branch, bArr) for branch in chain.evolves_to
+								arr.push bArr
+							else
+								next(chain.evolves_to[0], arr) if chain.evolves_to.length > 0
+						next(chain.chain, arr)
+						if pkmn.types.length > 1
+							typeOne = typeTwo = false
+							for slot in pkmn.types
+								if slot.slot is 1
+									typeOne = slot.type.name
+								else if slot.slot is 2
+									typeTwo = slot.type.name
+						msg.reply "##{pkmn.id}: #{pkmn.name.capitalize()} (#{typeOne}#{'/'+typeTwo if typeTwo})"
+						if arr.length > 1
+							msg.reply "Raw evolution chain (WIP): #{arr}"
+						else
+							msg.send "This pokémon doesn't evolve."
+
+	###
 		thePoke = getPokemonByName msg.match[1]
 		types = []
 		types.push(item.name.capitalize()) for item in thePoke.types
@@ -92,7 +132,6 @@ module.exports = (robot) =>
 		msg.reply "I am #{thePoke.name}. I am a #{types.join ' and '} pokemon! #{evoTxt}"
 	###
 	robot.respond /(?:poke)?dex art(?: me)? (\S+)$/im, (msg) ->
-		thePoke = getPokemonByName msg.match[1]
 		if namesReady
 			{match, name} = getPokemonByName(msg.match[1])
 			if match is 'none'
@@ -102,7 +141,7 @@ module.exports = (robot) =>
 					msg.reply "I'm assuming you mean #{name}, right?"
 				uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'
 				pokeID = padleft pokeDict[name], 3, '0'
-				msg.reply "#{uri}#{pokeID}.png"
+				msg.send "#{uri}#{pokeID}.png"
 	###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
