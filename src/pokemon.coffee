@@ -24,6 +24,11 @@ Joemon = require 'joemon'
 pokemon = new Joemon()
 
 module.exports = (robot) =>
+
+	###
+		INIT
+	###
+
 	moveNames = pokeNames = []
 	moveFuzzy = pokeFuzzy = {}
 	namesReady = movesReady = false
@@ -38,6 +43,16 @@ module.exports = (robot) =>
 		moveFuzzy = new Fuzzy(moveNames)
 		movesReady = true
 
+	###
+		/INIT
+	###
+
+
+	###
+		HELPERS
+	###
+
+	## Get pokemon or move name by fuzzy matching
 	getPokemonByName = (name) ->
 		if name not in pokeNames
 			fuzzyMatchNames = pokeFuzzy.get(name)
@@ -59,12 +74,15 @@ module.exports = (robot) =>
 		else
 			{match: 'exact', name: name}
 
+	## Give strings a capitalize method
 	String::capitalize = () ->
 		@[0].toUpperCase() + @.substring(1)
 
 	## Helper for checking that the plugin is ready and whatnot
 	pre = (msg, name, type) ->
+		# make sure we've grabbed and cached pokemon names and moves dicts
 		if namesReady and movesReady
+			# replace unicode symbold for M/F to make searching for nidoran-m/f easier
 			name = name.replace('♂','m').replace('♀','f')
 			if type is 'pokemon'
 				{match, name} = getPokemonByName name
@@ -76,10 +94,20 @@ module.exports = (robot) =>
 			else
 				if match is 'fuzzy'
 					msg.send "I'm assuming you mean #{name}?"
+				# put the symbols back in place of -m/f that PokeAPI uses
 				return name.replace('-m','♂').replace('-f','♀')
 		else
 			msg.reply "Sorry, I'm still initializing the Pokédex."
+	###
+		/HELPERS
+	###
 
+
+	###
+		ACTIONS
+	###
+
+	## <bot> dex sprite <pokemon> - get the sprite for this pokemon from PokeAPI
 	robot.respond /(?:poke)?dex sprite(?: me)? (\S+)$/im, (msg) ->
 		if name = pre(msg, msg.match[1], 'pokemon')
 			pokemon.getPokemon name, (status, body) ->
@@ -87,12 +115,22 @@ module.exports = (robot) =>
 					msg.send body.sprites.front_default
 				else
 					msg.reply "Sorry, I can't find a sprite for #{name}."
+
+
+	## <bot> dex <pokemon> - return general information for a pokemon
 	robot.respond /(?:poke)?dex(?: me)? (\S+)$/im, (msg) ->
 		if name = pre(msg, msg.match[1], 'pokemon')
 			pokemon.getPokemon name, (status, pkmn) ->
 				pokemon.getSpecies name, (status, species) ->
+
+					# pull the evolution chain ID then grab it
 					evoChainId = species.evolution_chain.url.match(/(?:\/([0-9]+)\/)/)[1]
 					pokemon.getEvoChain evoChainId, (status, chain) ->
+
+						# prepare a var for our output to go all at once
+						outLines = []
+
+						# walk the evolution chain
 						arr = []
 						next = (chain, arr) ->
 							arr.push chain.species.name
@@ -103,29 +141,32 @@ module.exports = (robot) =>
 							else
 								next(chain.evolves_to[0], arr) if chain.evolves_to.length > 0
 						next(chain.chain, arr)
-						if pkmn.types.length > 1
-							typeOne = typeTwo = false
-							for slot in pkmn.types
-								if slot.slot is 1
-									typeOne = slot.type.name
-								else if slot.slot is 2
-									typeTwo = slot.type.name
-						msg.reply "##{pkmn.id}: #{pkmn.name.capitalize()} (#{typeOne}#{'/'+typeTwo if typeTwo})"
+
+						# grab pokemon types
+						typeOne = typeTwo = false
+						for slot in pkmn.types
+							if slot.slot is 1
+								typeOne = slot.type.name
+							else if slot.slot is 2
+								typeTwo = slot.type.name
+						# build our first line of pokemon information for output
+						outLines.push "##{pkmn.id}: #{pkmn.name.capitalize()} (#{typeOne}#{'/'+typeTwo if typeTwo})"
+
+						# if the array is only 1 then it's a pokemon that doesn't evolve
 						if arr.length > 1
-							msg.reply "Raw evolution chain (WIP): #{arr}"
+							outLines.push "Raw evolution chain (WIP): #{arr}"
 						else
-							msg.send "This pokémon doesn't evolve."
+							outLines.push "This pokémon doesn't evolve."
+
+						# send out our lines, don't ping the caller
+						msg.send outLines.join('\n')
+
+	## <bot> dex art <pokemon> - grabs official art for pokemon from TPCI
 	robot.respond /(?:poke)?dex art(?: me)? (\S+)$/im, (msg) ->
-		if namesReady
-			{match, name} = getPokemonByName(msg.match[1])
-			if match is 'none'
-				msg.reply "I'm not sure what Pokémon you're looking for!"
-			else
-				if match is 'fuzzy'
-					msg.reply "I'm assuming you mean #{name}, right?"
-				uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'
-				pokeID = padleft pokeDict[name], 3, '0'
-				msg.send "#{uri}#{pokeID}.png"
+		if name = pre(msg, msg.match[1], 'pokemon')
+			uri = 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'
+			pokeID = padleft pokeDict[name], 3, '0'
+			msg.send "#{uri}#{pokeID}.png"
 	###
 	robot.respond /(?:poke)?dex moves(?: me)? (\S+)$/im, (msg) ->
 		thePoke = getPokemonByName msg.match[1]
@@ -145,4 +186,8 @@ module.exports = (robot) =>
 	robot.respond /(?:poke)?dex move(?: me)? (\S+(?: \S+)?)$/im, (msg) ->
 		theMove = getMoveByName msg.match[1]
 		msg.reply "#{theMove.name.replace '-', ' '}: #{theMove.description} [POW:#{theMove.power} ACC:#{theMove.accuracy} PP: #{theMove.pp}]"
+	###
+
+	###
+		/ACTIONS
 	###
