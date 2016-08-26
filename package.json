@@ -1,7 +1,7 @@
 {
   "name": "hubot-pokemon",
   "description": "A Hubot script to get Pokémon info.",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "author": {
     "name": "Ashley Luna",
     "email": "luna@neko.lgbt"
