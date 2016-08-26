@@ -24,10 +24,8 @@ Joemon = require 'joemon'
 pokemon = new Joemon()
 
 module.exports = (robot) =>
-	#movenames = []
-	pokeNames = []
-	#movesFuzzy = {}
-	pokeFuzzy = {}
+	moveNames = pokeNames = []
+	moveFuzzy = pokeFuzzy = {}
 	namesReady = movesReady = false
 	pokeDict = {}
 	pokemon.getPokedex 1, (status, body) ->
@@ -35,13 +33,10 @@ module.exports = (robot) =>
 		pokeDict[pkmn.pokemon_species.name] = pkmn.entry_number for pkmn in body.pokemon_entries
 		pokeFuzzy = new Fuzzy(pokeNames)
 		namesReady = true
-	###
 	pokemon.getMoves 9999, (status, body) ->
 		moveNames.push move.name.replace('-',' ') for move in body.results
 		moveFuzzy = new Fuzzy(moveNames)
 		movesReady = true
-	###
-	movesReady = true
 
 	getPokemonByName = (name) ->
 		if name not in pokeNames
@@ -53,7 +48,6 @@ module.exports = (robot) =>
 				{match: 'none', name:''}
 		else
 			{match: 'exact', name: name}
-	###
 	getMoveByName = (name) ->
 		if name not in moveNames
 			fuzzyMatchMoves = moveFuzzy.get(name)
@@ -64,7 +58,6 @@ module.exports = (robot) =>
 				{match: 'none', name: ''}
 		else
 			{match: 'exact', name: name}
-	###
 
 	String::capitalize = () ->
 		@[0].toUpperCase() + @.substring(1)
@@ -74,6 +67,10 @@ module.exports = (robot) =>
 		if namesReady and movesReady
 			name = name.replace('♂','m').replace('♀','f')
 			{match, name} = eval "get#{type.capitalize}ByName(#{name})"
+			if type is 'pokemon'
+				{match, name} = getPokemonByName name
+			else if type is 'move'
+				{match, name} = getMoveByName name
 			if match is 'none'
 				msg.reply "I'm not sure what Pokémon you're looking for!"
 				return false
