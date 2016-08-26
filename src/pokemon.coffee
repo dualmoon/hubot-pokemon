@@ -71,6 +71,7 @@ module.exports = (robot) =>
 	## Helper for checking that the plugin is ready and whatnot
 	pre = (msg, name, type) ->
 		if namesReady and movesReady
+			name = name.replace('♂','m').replace('♀','f')
 			{match, name} = eval "get#{type.capitalize}ByName(name)"
 			if match is 'none'
 				msg.reply "I'm not sure what Pokémon you're looking for!"
@@ -78,7 +79,7 @@ module.exports = (robot) =>
 			else
 				if match is 'fuzzy'
 					msg.send "I'm assuming you mean #{name}?"
-				return name
+				return name.replace('-m','♂').replace('-f','♀')
 		else
 			msg.reply "Sorry, I'm still initializing the Pokédex."
 
